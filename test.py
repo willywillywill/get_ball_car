@@ -3,6 +3,8 @@ import matplotlib.pylab as plt
 import matplotlib.animation as animation
 import pprint
 
+
+
 class Node:
     def __init__(self, xy):
         self.data = np.random.randint(2, size=(10,10))
@@ -65,17 +67,18 @@ Msize = 5
 root = Map(Msize)
 fig, ax = plt.subplots(1,2)
 
-ax[0].title.set_text("MAP")
+root.A(0)
 im1 = ax[0].imshow(root.return_data(0,0))
 im2 = ax[1].imshow(root.return_nodes_state())
 
 def animate(i):
+    ax[0].title.set_text("in Map-%d" % (i))
+    ax[1].title.set_text("MAP-%d" % (i))
 
     x,y = root.A(i)
-
     j = root.return_nodes_state()
     k = root.return_data(x,y)
-    pprint.pprint(j)
+
     im1.set_data(k)
     im2.set_data(j)
 
@@ -86,5 +89,6 @@ ani = animation.FuncAnimation(fig,
                               animate,
                               frames=d+d[::-1],
                               interval=200)
+
 
 
