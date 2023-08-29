@@ -77,7 +77,7 @@ def animate(i):
     x = abs(((Msize - 1) * (y % 2)) - (i % Msize))
 
     m.updata_map((x,y))
-    
+    m.update_node((x,y))
 
     im1_data = m.return_map()
     im2_data = m.return_node()
