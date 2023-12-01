@@ -1,46 +1,55 @@
 # from vpython import *
 import numpy as np
 import heapq
+
+class node:
+    def __init__(self, idx):
+        self.idx = idx
 class Link_list:
     def __init__(self):
         self.link = {}
-    def insert(self, val_idx):
-        self.link[val_idx] = [ i for i in self.link ]
+        self.all_node = []
+        self.all_idx = []
+    def insert(self, idx):
+        self.all_idx.append(idx)
+        self.all_node.append(node(idx))
         for i in self.link:
-            if i != val_idx:
-                self.link[i].append(val_idx)
-    def delete(self, idx):
-        del self.link[idx]
-        for i in self.link:
-            if idx in self.link[i]:
-                j = self.link[i].index(idx)
-                del self.link[i][j]
+            self.link[i].append(self.all_node[-1])
+        self.link[self.all_node[-1]] = [ i for i in self.link ]
 
 class Graph:
-    def __init__(self, shape):
-        self.weight = np.zeros(shape, dtype=np.float16)
+    def __init__(self):
         self.link = Link_list()
-    def updata(self, idx:tuple, w:int):
-        self.weight[idx[0],idx[1]] = w
+        self.xy = (0,0)
+    def updata(self, idx:tuple):
         self.link.insert(idx)
-    
-    def dijkstra(self, start, end):
-        qu = [start]
-        vis = { i:0 for i in self.link }
+    def dijkstra(self):
+        qu = [(0, self.xy)]
+        vis = { i.idx:0 for i in self.link.link }
+        route = []
         heapq.heapify(qu)
         while qu:
-            root = heapq.heappop(qu)
-            if end == root:
-                break
-            if vis[root]:
+            w,idx = heapq.heappop(qu)
+            if vis[idx]:
                 continue
-            vis[root] = 1
+            vis[idx] = 1
+            route.append(idx)
 
-            for i in self.link[root]:
-                qu.append(i)
-    def print_w(self):
-        print(self.weight)
-graph = Graph((10,10))
-graph.updata((1,1),2)
+            for i in self.link.link:
+                d_w = ((i.idx[0]-idx[0])**2+(i.idx[1]-idx[1])**2)**0.5
+                heapq.heappush(qu, (w+d_w,i.idx))
+        print(route)
+    def find_ptr(self, x):
+        pass
+    def kruskal(self):
+        pass
 
-graph.print_w()
+graph = Graph()
+graph.updata((0,0))
+graph.updata((0,1))
+graph.updata((1,0))
+graph.updata((1,1))
+graph.updata((2,1))
+graph.updata((1,2))
+
+graph.dijkstra()
