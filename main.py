@@ -40,7 +40,6 @@ class route:
             if i != ptr:
                 dw = ((root.idx[0]-i.idx[0])**2 + (root.idx[1]-i.idx[1])**2)**0.5
                 self.dfs(w+dw, i, root, vis.copy())
-
     def run(self, start:tuple):
         vis = { i:0 for i in self.node_lst.all_node if i.struct==2 }
         root = self.node_lst.all_node[self.node_lst.all_idx.index(start)]
