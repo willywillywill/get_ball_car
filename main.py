@@ -5,51 +5,62 @@ import heapq
 class node:
     def __init__(self, idx):
         self.idx = idx
-class Link_list:
+        """
+        0: no
+        1: car
+        2: ball
+        """
+        self.struct = 0
+class node_list:
     def __init__(self):
-        self.link = {}
         self.all_node = []
         self.all_idx = []
-    def insert(self, idx):
+    def insert(self, idx:tuple):
+        root = node(idx)
         self.all_idx.append(idx)
-        self.all_node.append(node(idx))
-        for i in self.link:
-            self.link[i].append(self.all_node[-1])
-        self.link[self.all_node[-1]] = [ i for i in self.link ]
+        self.all_node.append(root)
+    def updata_struct(self, idx, val):
+        idx = self.all_idx.index(idx)
+        self.all_node[idx].struct = val
 
-class Graph:
-    def __init__(self):
-        self.link = Link_list()
-        self.xy = (0,0)
-    def updata(self, idx:tuple):
-        self.link.insert(idx)
-    def dijkstra(self):
-        qu = [(0, self.xy)]
-        vis = { i.idx:0 for i in self.link.link }
-        route = []
-        heapq.heapify(qu)
-        while qu:
-            w,idx = heapq.heappop(qu)
-            if vis[idx]:
-                continue
-            vis[idx] = 1
-            route.append(idx)
+class route:
+    def __init__(self, node_lst):
+        self.min_route = {"r": [], "w": 1e9}
+        self.node_lst = node_lst
+    def dfs(self, w:float, root:node, ptr:node, vis:dict):
+        if 0 not in vis.values():
+            if self.min_route["w"] > w:
+                self.min_route = { "r":vis, "w":w }
+            return
+        elif vis[root]:
+            return
 
-            for i in self.link.link:
-                d_w = ((i.idx[0]-idx[0])**2+(i.idx[1]-idx[1])**2)**0.5
-                heapq.heappush(qu, (w+d_w,i.idx))
-        print(route)
-    def find_ptr(self, x):
-        pass
-    def kruskal(self):
-        pass
+        vis[root] = vis[ptr]+1
+        for i in vis:
+            if i != ptr:
+                dw = ((root.idx[0]-i.idx[0])**2 + (root.idx[1]-i.idx[1])**2)**0.5
+                self.dfs(w+dw, i, root, vis.copy())
 
-graph = Graph()
-graph.updata((0,0))
-graph.updata((0,1))
-graph.updata((1,0))
-graph.updata((1,1))
-graph.updata((2,1))
-graph.updata((1,2))
+    def run(self, start:tuple):
+        vis = { i:0 for i in self.node_lst.all_node if i.struct==2 }
+        root = self.node_lst.all_node[self.node_lst.all_idx.index(start)]
+        self.dfs(0, root, root, vis)
+        r = self.min_route["r"]
+        w = self.min_route["w"]
+        print([ [i.idx, r[i]] for i in r ], w)
 
-graph.dijkstra()
+
+
+graph = node_list()
+graph.insert((0,0))
+graph.insert((1,9))
+graph.insert((5,2))
+graph.insert((3,5))
+
+graph.updata_struct((0,0), 2)
+graph.updata_struct((5,2), 2)
+graph.updata_struct((3,5), 2)
+
+
+r = route(graph)
+r.run((0,0))
