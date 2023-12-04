@@ -4,6 +4,7 @@ import random
 
 
 
+
 class obj_info:
     def __init__(self, **kwargs):
         # 直接
