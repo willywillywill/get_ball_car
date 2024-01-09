@@ -1,4 +1,5 @@
-
+import heapq
+import matplotlib.pyplot as plt
 class node:
     def __init__(self):
         """
@@ -14,11 +15,14 @@ class node_list:
     def insert(self, idx:tuple, struct=0):
         self.all_node[idx] = node()
         self.all_node[idx].struct = struct
+
+        plt.scatter(idx[0], idx[1])
+        plt.text(idx[0], idx[1], f"{idx[0]},{idx[1]}")
+
     def updata_struct(self, idx, val):
         self.all_node[idx].struct = val
     def updata_idx(self, old_idx, new_idx):
         self.all_node[new_idx] = self.all_node.pop(old_idx)
-
 
 class route:
     def __init__(self, node_lst):
@@ -44,18 +48,24 @@ class route:
         w = self.min_route["w"]
         print(r, w)
 
+if __name__ == "__main__":
+    graph = node_list()
+    graph.insert((0,0))
+    graph.insert((1,9))
+    graph.insert((5,2))
 
-""" test
-graph = node_list()
-graph.insert((0,0))
-graph.insert((1,9))
-graph.insert((5,2))
-graph.insert((3,5))
 
-graph.updata_struct((0,0), 2)
-graph.updata_struct((5,2), 2)
-graph.updata_struct((3,5), 2)
+    graph.updata_struct((0,0), 2)
+    graph.updata_struct((1,9), 2)
+    graph.updata_struct((5,2), 2)
 
-r = route(graph)
-r.run((0,0))
-"""
+    r = route(graph)
+    r.run((0,0))
+
+    graph.insert((4,2))
+    graph.updata_struct((4,2), 2)
+    r = route(graph)
+    r.run((0,0))
+
+    plt.show()
+
